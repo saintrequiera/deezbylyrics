@@ -31,7 +31,8 @@
         <p></p>
         <div class="row" id="index" style="display: none;">0</div>
         <span class="clearfix borda"></span>
-        <div class="row h-scroll" id="results">
+        <div class="row" >
+            <div class="col-md-12 h-scroll" id="results""></div>
         </div>
 
         <div class="footer">
@@ -64,7 +65,7 @@
                     onload : function(response) {
                         console.log('DZ.player is ready', response);
                     }
-            }
+                }
             });
 
             //Define search action
@@ -82,11 +83,10 @@
                         html_result += '<h2 class="lead"><strong id="total-results" class="text-danger">' + response.total + '</strong> results were found for the search for <strong class="text-danger">'+ search_query +' </strong></h2>';
                             html_result += '</hgroup>';
                     }
-
                     html_result += '<section class="col-xs-12 col-sm-6 col-md-12">';
                     html_result += html_data;
                     html_result += '</section>';
-                    html_result += '</div>';
+
                     $('#index').text(parseInt(index)+10);
                     if (index == 0) {
                        // $('#results').html('');
