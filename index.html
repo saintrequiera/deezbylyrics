@@ -8,32 +8,34 @@
 
     <!-- Bootstrap -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="css/search.css">
+    <link rel="stylesheet" type="text/css" href="css/search.css">
 
   </head>
   <body>
-  	<div class="container">
-  		<div class="row">
-	  			<div class="col-md-8">
-		    	<div class="input-group input-group-lg">
-		    		<span class="input-group-addon logo-background" id="basic-addon1"><img src="img/dz_logo.png" width="106" height="20" /></span>
-		      		<input type="text" class="form-control" placeholder="Search for tracks by lyrics" id="searchQuery">
-		      		<span class="input-group-btn">
-		        		<button class="btn btn-default" type="button" id="searchAction"><span class="glyphicon glyphicon-search"></span></button>
-		      		</span>
-		    	</div>
-		    </div>
-	  	</div>
+    <div class="container">
+        <div class="row">
+                <div class="col-md-8">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon logo-background" id="basic-addon1"><img src="img/dz_logo.png" width="106" height="20" /></span>
+                    <input type="text" class="form-control" placeholder="Search for tracks by lyrics" id="searchQuery">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" id="searchAction"><span class="glyphicon glyphicon-search"></span></button>
+                    </span>
+                </div>
+            </div>
+        </div>
 
-		<p></p>
-		<p></p>
-		<div class="row" id="results">
-		</div>
+        <p></p>
+        <p></p>
+        <div class="row" id="index" style="display: none;">0</div>
+        <span class="clearfix borda"></span>
+        <div class="row h-scroll" id="results">
+        </div>
 
         <div class="footer">
         <div id="dz-player"></div>
         </div>
-	</div>
+    </div>
     <div id="dz-root"></div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
@@ -47,7 +49,7 @@
     <script>
 
         $( document ).ready( function() {
-    	   $('#results').hide();
+           $('#results').hide();
 
             //Initalize Deezer player
             DZ.init({
@@ -64,33 +66,54 @@
             });
 
             //Define search action
-        	$('#searchAction').on('click', function() {
-        		var search_query = $('#searchQuery').val();
-        		var query = 'lyrics:%22' +  search_query + '%22'; //Construct advanced lyrics search query
+            $('#searchAction').on('click', function() {
+                var search_query = $('#searchQuery').val();
+                var query = 'lyrics:%22' +  search_query + '%22'; //Construct advanced lyrics search query
+                var index = $('#index').text();
 
                 //Search through Deezer api
-                DZ.api('/search', 'POST', {q:query, index:0, limit:10}, function(response) {
+                DZ.api('/search', 'GET', {q:query, index:index, limit:10}, function(response) {
                     var html_data = formatData(response.data);
-                    var html_result = '<div class="col-md-12 h-scroll">';
-                    html_result += '<hgroup class="mb20">';
-                    html_result += '<h2 class="lead"><strong class="text-danger">' + response.total + '</strong> results were found for the search for <strong class="text-danger">'+ search_query +' </strong></h2>';
-                    html_result += '</hgroup>';
+                    var html_result = '<div class="col-md-12">';
+                    if (index == 0) {
+                        html_result += '<hgroup class="mb20">';
+                        html_result += '<h2 class="lead"><strong id="total-results" class="text-danger">' + response.total + '</strong> results were found for the search for <strong class="text-danger">'+ search_query +' </strong></h2>';
+                            html_result += '</hgroup>';
+                    }
+
                     html_result += '<section class="col-xs-12 col-sm-6 col-md-12">';
                     html_result += html_data;
                     html_result += '</section>';
                     html_result += '</div>';
-                    $('#results').html('');
-                    $('#results').html(html_result);
+                    $('#index').text(parseInt(index)+10);
+                    if (index == 0) {
+                       // $('#results').html('');
+                        $('#results').html(html_result);
+
+                    } else {
+                        $('#results').append(html_result);
+                    }
                     $('#results').show();
                 });
-        	});
+            });
 
             //Handle enter key
-        	$('#searchQuery').keypress(function(e){
-            	if(e.which == 13){//Enter key pressed
-                	$('#searchAction').click();//Trigger search button click event
-            	}
-        	});
+            $('#searchQuery').keypress(function(e){
+                if(e.which == 13){//Enter key pressed
+                    $('#index').text(0);
+                    $('#searchAction').click();//Trigger search button click event
+                }
+            });
+
+            $("#results").scroll( function() {
+                if($(this)[0].scrollHeight - $(this).scrollTop() == $(this).outerHeight()) {
+                    var index = $('#index').text();
+                    var total = $('#total-results').text();
+                    if (parseInt(index) < parseInt(total)) {
+                        $('#searchAction').click();
+                    }
+                }
+            });
         });
 
         //Add track to Deezer player
@@ -99,35 +122,35 @@
         }
 
         //Format a search results
-    	function formatData(data) {
-    		var html = '';
-    		for(key in data) {
+        function formatData(data) {
+            var html = '';
+            for(key in data) {
 
-    			var minutes = Math.floor(data[key].duration / 60);
-    			var seconds = data[key].duration - minutes * 60;
+                var minutes = Math.floor(data[key].duration / 60);
+                var seconds = data[key].duration - minutes * 60;
 
 
-    			html += '<article class="search-result row">';
-				html += '<div class="col-xs-12 col-sm-12 col-md-2">';
-				html += '<a href="'+ data[key].link +'" title="album cover" class="thumbnail"><img src="' + data[key].album.cover_medium + '" alt="album cover" /></a>';
-				html += '</div>';
-				html += '<div class="col-xs-12 col-sm-12 col-md-2">';
-				html += '<ul class="meta-search">';
-				html +=	'<li><i class="glyphicon glyphicon-music"></i> <span>' + data[key].album.title + '</span></li>';
-				html +=	'<li><i class="glyphicon glyphicon-user"></i> <span>' + data[key].artist.name + '</span></li>';
-				html += '<li><i class="glyphicon glyphicon-time"></i> <span>' + minutes + ':' + seconds + '</span></li>';
-				html += '</ul>';
-				html += '</div>';
-				html += '<div class="col-xs-12 col-sm-12 col-md-7 excerpet">';
-				html += '<h3><a href="#" onclick="playTrack('+data[key].id+')" id="' + data[key].id + '" title=""><span class="glyphicon glyphicon-play-circle" style="color:white;"></span>&nbsp &nbsp' + data[key].title + '</a></h3>';
-				//html += '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem, exercitationem, suscipit, distinctio, qui sapiente aspernatur molestiae non corporis magni sit sequi iusto debitis delectus doloremque.</p>';
-				html += '</div>';
-				html += '<span class="clearfix borda"></span>';
-				html += '</article>';
-    		}
+                html += '<article class="search-result row">';
+                html += '<div class="col-xs-12 col-sm-12 col-md-2">';
+                html += '<a href="'+ data[key].link +'" title="album cover" class="thumbnail"><img src="' + data[key].album.cover_medium + '" alt="album cover" /></a>';
+                html += '</div>';
+                html += '<div class="col-xs-12 col-sm-12 col-md-2">';
+                html += '<ul class="meta-search">';
+                html += '<li><i class="glyphicon glyphicon-music"></i> <span>' + data[key].album.title + '</span></li>';
+                html += '<li><i class="glyphicon glyphicon-user"></i> <span>' + data[key].artist.name + '</span></li>';
+                html += '<li><i class="glyphicon glyphicon-time"></i> <span>' + minutes + ':' + seconds + '</span></li>';
+                html += '</ul>';
+                html += '</div>';
+                html += '<div class="col-xs-12 col-sm-12 col-md-7 excerpet">';
+                html += '<h3><a href="#" onclick="playTrack('+data[key].id+')" id="' + data[key].id + '" title=""><span class="glyphicon glyphicon-play-circle" style="color:white;"></span>&nbsp &nbsp' + data[key].title + '</a></h3>';
+                //html += '<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem, exercitationem, suscipit, distinctio, qui sapiente aspernatur molestiae non corporis magni sit sequi iusto debitis delectus doloremque.</p>';
+                html += '</div>';
+                html += '<span class="clearfix borda"></span>';
+                html += '</article>';
+            }
 
-    		return html;
-    	}
+            return html;
+        }
     </script>
 
 
