@@ -69,7 +69,7 @@
         		var query = 'lyrics:%22' +  search_query + '%22'; //Construct advanced lyrics search query
 
                 //Search through Deezer api
-                DZ.api('/search', 'POST', {query:query, index:0, limit:10}, function(response) {
+                DZ.api('/search', 'POST', {q:query, index:0, limit:10}, function(response) {
                     var html_data = formatData(response.data);
                     var html_result = '<div class="col-md-12 h-scroll">';
                     html_result += '<hgroup class="mb20">';
