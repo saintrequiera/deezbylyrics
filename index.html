@@ -46,7 +46,7 @@
 
     <script>
 
-        $( document ).ready(
+        $( document ).ready( function() {
     	   $('#results').hide();
 
             //Initalize Deezer player
@@ -91,7 +91,7 @@
                 	$('#searchAction').click();//Trigger search button click event
             	}
         	});
-        );
+        });
 
         //Add track to Deezer player
         function playTrack(id) {
