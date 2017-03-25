@@ -1,7 +1,6 @@
 @import "http://fonts.googleapis.com/css?family=Roboto:300,400,500,700";
 
-body {background-color: #fff; }
-.container { margin-top: 20px; }
+body {background-color: #fff;}
 .mb20 { margin-bottom: 20px; }
 hgroup { padding-left: 15px; border-bottom: 1px solid #ccc; }
 hgroup h1 {font: 500 normal 2.0em "Roboto",Arial,Verdana,sans-serif; color: #545454; margin-top: 0; line-height: 2.15; }
@@ -11,6 +10,7 @@ hgroup h2.lead { font: normal normal 1.125em "Roboto",Arial,Verdana,sans-serif; 
 .text-danger {color: #E72D63;}
 
 .search-head {height: 65px; background-color: #fafafa; padding-top: 10px;}
+.search-empty {margin: 40px;}
 
 .search-result .thumbnail { border: none;}
 .search-result img {height: 120px; width: 120px; }
@@ -36,4 +36,39 @@ hgroup h2.lead { font: normal normal 1.125em "Roboto",Arial,Verdana,sans-serif; 
     height: 200vh; /* %-height of the viewport */
     position: fixed;
     overflow-y: scroll;
+}
+
+blockquote {
+font-family: Georgia, serif;
+font-size: 18px;
+font-style: italic;
+width: 100%;
+margin: 0.25em 0;
+padding: 0.35em 40px;
+line-height: 1.45;
+border: none;
+position: relative;
+color: #383838;
+}
+
+blockquote:before {
+display: block;
+padding-left: 10px;
+content: "\201C";
+font-size: 80px;
+position: absolute;
+left: -20px;
+top: -20px;
+color: #7a7a7a;
+}
+
+blockquote cite {
+color: #999999;
+font-size: 14px;
+display: block;
+margin-top: 5px;
+}
+ 
+blockquote cite:before {
+content: "\2014 \2009";
 }
