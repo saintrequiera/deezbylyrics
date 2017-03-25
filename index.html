@@ -28,6 +28,12 @@
 
     <p></p>
     <p></p>
+
+    <!-- Empty state : lyrics quote -->
+    <div class="search-empty" id="empty-div">
+        
+    </div>
+    
     <div class="row" id="index" style="display: none;">0</div>
     <span class="clearfix borda"></span>
     <div class="row" >
@@ -54,6 +60,8 @@
         $( document ).ready( function() {
            $('#results').hide();
 
+           displayQuotes();
+
             //Initalize Deezer player
             DZ.init({
                 appId  : '229022',
@@ -71,6 +79,9 @@
             //Define search action
             $('#searchAction').on('click', function() {
                 var search_query = $('#searchQuery').val();
+                if (search_query == '') {
+                    return false;
+                }
                 var query = 'lyrics:%22' +  search_query + '%22'; //Construct advanced lyrics search query
                 var index = $('#index').text();
 
@@ -80,7 +91,8 @@
                     var html_result = '<div class="col-md-12">';
                     if (index == 0) {
                         html_result += '<hgroup class="mb20">';
-                        html_result += '<h2 class="lead"><strong id="total-results" class="text-danger">' + response.total + '</strong> results were found for the search for <strong class="text-danger">'+ search_query +' </strong></h2>';
+                        html_result += '<div id="total-results" style="display:none;">' + response.total + '</div>';
+                        html_result += '<h2 class="lead"> All tracks found for the search for <strong class="text-danger">'+ search_query +' </strong></h2>';
                             html_result += '</hgroup>';
                     }
                     html_result += '<section class="col-xs-12 col-sm-6 col-md-12" id="search-results">';
@@ -95,6 +107,7 @@
                     } else {
                         $('#results').append(html_result);
                     }
+                    $('#empty-div').hide();
                     $('#results').show();
                 });
             });
@@ -134,7 +147,7 @@
 
                 html += '<article class="search-result row">';
                 html += '<div class="col-xs-12 col-sm-12 col-md-2">';
-                html += '<a href="'+ data[key].link +'" title="album cover" class="thumbnail"><img src="' + data[key].album.cover_medium + '" alt="album cover" /></a>';
+                html += '<a href="'+ data[key].link +'" title="album cover" class="thumbnail" target="_blank"><img src="' + data[key].album.cover_medium + '" alt="album cover" /></a>';
                 html += '</div>';
                 html += '<div class="col-xs-12 col-sm-12 col-md-2">';
                 html += '<ul class="meta-search">';
@@ -152,6 +165,38 @@
             }
 
             return html;
+        }
+
+        function getRandom(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+
+
+        function displayQuotes() {
+            var quotes = [
+            "Take my hand, we'll make it I swear.<cite>Bon Jovi</cite>",
+            "Cursed missed opportunities am I<br/>A part of the cure</br>Or am I part of the disease, singing<cite>Coldplay</cite>",
+            "I decided long ago, never to walk in anyone's shadows<br/>If I fail, if I succeed<br/>At least I'll live as I believe</br>No matter what they take from me</bt>They can't take away my dignity <cite>Whitney Houston</cite>",
+            "Bouncin' in the club where the heat is on<br/>All night, on the beach till the break of dawn<cite>Will Smith</cite>",
+            "Two trailer park girls go round the outside, <br />Round the outside, round the outside<cite>Eminem</cite>",
+            "What if I, had a thing on the side <br/>Made you cry?<br/>Would the rules change up or would they still apply?<br />If I played you like a toy</br>Sometimes I wish I could act like a boy<cite>Ciara</cite>",
+            "Look at your children<br/>See their faces in golden rays <br/>Don’t kid yourself they belong to you <br/>They’re the start of a coming race<cite>David Bowie</cite>",
+            "Yes, there are two paths you can go by, but in the long run<br/>There’s still time to change the road you’re on<br/>And it makes me wonder<cite>Led Zeppelin</cite>",
+            "I'm gonna make a change<br/>For once in my life<br/>It gonna feel real good</br>Gonna make difference</br>Gonna make it right...<cite>Michel Jackson</cite>",
+            "Mama, just killed a man<br/>Put a gun against his head<br/>Pulled my trigger, now he's dead<br/>Mama, life had just begun<br/>But now I've gone and thrown it all away<br/>Mama, ooo<cite>Queen</cite>",
+            "And I never wanted anything from you<br/>Except everything you had<br/>And what was left after that too, oh.<cite>Florence + The Machine<br/>",
+            "Oh, simple thing, where have you gone?<br/>I'm getting old, and I need something to rely on<br>So tell me when you're gonna let me in</br>I'm getting tired, and I need somewhere to begin<cite>Keane</cite>",
+            "Et je ne rêve pas je sais quand j'arreterai<br/>Je vais quitter Paris<br/>Je sais après, je vais payer pour ça<br/>Ouais je vas payer pour ça<cite>Julien Doré</cite>",
+            "Far away<br/>Across the field<br/>Tolling on the iron bell<br/>Calls the faithful to their knees<br>To hear the softly spoken magic spell<cite>Pink Floyd</cite>",
+            "I'm about to give you all of my money<br/>And all I'm askin' in return, honey<br/>Is to give me my profits<cite>Aretha Franklin</cite>",
+            "Hold my breath as I wish for death<br/>Oh please, God, wake me<cite>Metallica</cite>",
+            "Moi je t'offrirai<br/>Des perles de pluie<br/>Venues de pays où il ne pleut pas<cite>Jacques Brel</cite>",
+            "So I called up the Captain<br>'Please bring me my wine<br/>He said, \"we haven't had that spirit here since nineteen sixty-nine<br/>And still those voices are calling from far away<br/>Wake you up in the middle of the night</br>Just to hear them say\"<cite>The Eagles</cite>",
+            "Who controls the past now controls the future<br/>Who controls the present now controls the past<br/>Who controls the past now controls the future<br>Who controls the present now?<cite>Rage Against The Machine</cite>",
+           ];
+
+           var i = getRandom(0, quotes.length - 1);
+           $('#empty-div').append('<blockquote>' + quotes[i] + '</blockquote>');
         }
     </script>
 
