@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Deez By Lyrics</title>
+    <meta name="description" content="You know the words but you don’t know the song? Discover the Deezer new lyric search feature">
     <link rel="icon" type="img/ico" href="img/favicon.ico">
 
 
@@ -40,7 +41,7 @@
         <div class="col-md-12 h-scroll" id="results""></div>
     </div>
 
-    <div class="footer">
+    <div class="footer" id="div-player">
         <div class="col-md-8">
             <div id="dz-player"></div>
         </div>
@@ -59,6 +60,7 @@
 
         $( document ).ready( function() {
            $('#results').hide();
+           $('#div-player').hide();
 
            displayQuotes();
 
@@ -134,6 +136,7 @@
         //Add track to Deezer player
         function playTrack(id) {
             DZ.player.playTracks([id]);
+            $('#div-player').show();
         }
 
         //Format a search results
