@@ -145,7 +145,10 @@
             for(key in data) {
 
                 var minutes = Math.floor(data[key].duration / 60);
-                var seconds = data[key].duration - minutes * 60;
+                var seconds = '' + (data[key].duration - minutes * 60);
+                if (seconds.length == 1) {
+                    seconds = '0' + seconds;
+                }
 
 
                 html += '<article class="search-result row">';
